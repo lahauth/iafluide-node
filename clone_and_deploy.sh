@@ -3,10 +3,10 @@
 echo "🌀 Déploiement automatique du nœud IA Fluide..."
 
 echo "⬇️ Téléchargement du package IA Fluide..."
-wget -O iafluide_node_package.zip https://github.com/lahauth/iafluide-node/releases/latest/download/iafluide_node_package.zip
+wget -O iafluide_node_package.tar.gz https://github.com/lahauth/iafluide-node/releases/download/v1.1.4/iafluide_node_package_v1.1.4.tar.gz
 
 echo "📦 Décompression..."
-unzip -o iafluide_node_package.zip -d iafluide_node
+tar -xzf iafluide_node_package.tar.gz -C .
 
 echo "🧪 Préparation de l'environnement Python..."
 cd iafluide_node
