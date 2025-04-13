@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>🧠 IA Fluide – Interface de Test</title>
+    <style>
+        body { background: #111; color: #eee; font-family: sans-serif; padding: 30px; }
+        textarea { width: 100%; height: 100px; background: #222; color: #0f0; border: none; padding: 10px; }
+        button { padding: 10px 20px; background: #0f0; color: #000; font-weight: bold; border: none; cursor: pointer; }
+        #logCoherence, #stats { background: #222; color: #0f0; padding: 10px; max-height: 300px; overflow: auto; }
+        ul { margin: 0; padding-left: 20px; }
+    </style>
+</head>
+<body>
+
+    <h1>🧠 Nœud IA Fluide – Interface de Test</h1>
+
+    <h2>🧪 Test de Cohérence Logique</h2>
+    <textarea id="coherenceText" placeholder="Entrez un texte à analyser ici..."></textarea><br><br>
+    <button onclick="testerCoherence()">Analyser le texte</button>
+    <p id="coherenceResult"></p>
+    <div id="suggestions"></div>
+
+    <hr>
+    <h3>📘 Journal des Analyses</h3>
+    <button onclick="afficherLog()">Voir le journal</button>
+    <pre id="logCoherence"></pre>
+
+    <hr>
+    <h3>📊 Statistiques dynamiques</h3>
+    <button onclick="afficherStats()">Voir les statistiques</button>
+    <div id="stats"></div>
+
+    <script>
+    function testerCoherence() {
+        const texte = document.getElementById("coherenceText").value;
+        fetch("/test-coherence", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ texte: texte })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const result = data.coherence
+                ? "✅ Cohérence fluide détectée."
+                : "⚠️ Fragmentation logique détectée.";
+            document.getElementById("coherenceResult").innerText = result;
+
+            let sugText = "";
+            if (data.suggestions && data.suggestions.length > 0) {
+                sugText = "<b>💡 Suggestions :</b><ul>";
+                for (let s of data.suggestions) {
+                    sugText += "<li>" + s + "</li>";
+                }
+                sugText += "</ul>";
+            }
+            document.getElementById("suggestions").innerHTML = sugText;
+        });
+    }
+
+    function afficherLog() {
+        fetch("/log-coherence")
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("logCoherence").innerText = data;
+        });
+    }
+
+    function afficherStats() {
+        fetch("/stats-coherence")
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                document.getElementById("stats").innerHTML = "<b>❌ Erreur :</b> " + data.error;
+                return;
+            }
+
+            let html = "<b>📊 Statistiques globales :</b><br>";
+            html += `Total d'analyses : <b>${data.total}</b><br>`;
+            html += `Fragmentations détectées : <b>${data.incoherents}</b><br>`;
+            html += `Taux de cohérence : <b>${data.coherence_pct}%</b><br>`;
+
+            if (data.top_contradictions && data.top_contradictions.length > 0) {
+                html += "<br><b>❌ Contradictions fréquentes :</b><ul>";
+                data.top_contradictions.forEach(item => {
+                    html += `<li>${item[0]} — ${item[1]} fois</li>`;
+                });
+                html += "</ul>";
+            }
+
+            document.getElementById("stats").innerHTML = html;
+        });
+    }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>📂 Mémoire Fragmentée – IA Fluide</title>
+    <style>
+        body { background: #111; color: #eee; font-family: sans-serif; padding: 30px; }
+        .fragment { background: #222; margin: 10px 0; padding: 10px; border-left: 4px solid #f00; }
+        .texte { font-style: italic; color: #0f0; }
+        .contradictions { color: #ff8080; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<h1>📂 Mémoire Fragmentée – IA Fluide</h1>
+<p>Liste des textes incohérents enregistrés avec leurs contradictions détectées.</p>
+<div id="memoire"></div>
+
+<script>
+fetch("/static/memoires/fragmentations.json")
+    .then(response => response.json())
+    .then(data => {
+        const conteneur = document.getElementById("memoire");
+        if (data.length === 0) {
+            conteneur.innerHTML = "<p>Aucun fragment incohérent enregistré.</p>";
+            return;
+        }
+
+        data.forEach(entry => {
+            const div = document.createElement("div");
+            div.className = "fragment";
+            div.innerHTML = `
+                <div class="texte">📝 ${entry.texte}</div>
+                <div class="contradictions">❌ ${entry.contradictions.join(" / ")}</div>
+                <div>🕒 ${entry.timestamp}</div>
+            `;
+            conteneur.appendChild(div);
+        });
+    });
+</script>
+
+</body>
+</html>

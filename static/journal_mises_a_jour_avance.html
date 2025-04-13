@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>📘 Journal IA Fluide – Historique Intelligent</title>
+  <style>
+    body { font-family: sans-serif; background: #f8f8f8; color: #222; padding: 2em; }
+    h1 { color: #006699; }
+    pre { background: #eee; padding: 1em; border-radius: 6px; max-height: 300px; overflow-y: auto; white-space: pre-wrap; }
+    select, button { padding: 0.5em; font-size: 1em; margin: 0.5em 0; }
+    .log-block { margin-bottom: 2em; }
+    .log-title { font-weight: bold; margin-bottom: 0.5em; color: #005577; }
+  </style>
+</head>
+<body>
+  <h1>📘 Journal des Mises à Jour – IA Fluide</h1>
+  <label for="filter">📅 Filtrer par date :</label>
+  <select id="filter" onchange="loadFilteredLog()">
+    <option value="">Toutes les dates</option>
+  </select>
+
+  <div id="logs">Chargement...</div>
+
+  <script>
+    async function fetchLogList() {
+      try {
+        const res = await fetch("/static/logs/");
+        const text = await res.text();
+        const regex = /href="(update_\d{8}_\d{6}\.log)"/g;
+        let match;
+        let files = [];
+        while ((match = regex.exec(text)) !== null) {
+          files.push(match[1]);
+        }
+        return files.reverse(); // les plus récents d'abord
+      } catch (e) {
+        console.error("Erreur récupération fichiers:", e);
+        return [];
+      }
+    }
+
+    async function loadFilteredLog() {
+      const selected = document.getElementById("filter").value;
+      loadLogs(selected);
+    }
+
+    async function loadLogs(filterDate = "") {
+      const container = document.getElementById("logs");
+      container.innerHTML = "Chargement...";
+      const files = await fetchLogList();
+
+      // mettre à jour le sélecteur si vide
+      const selector = document.getElementById("filter");
+      if (selector.options.length === 1) {
+        const uniqueDates = [...new Set(files.map(f => f.substring(7, 15)))];
+        uniqueDates.forEach(d => {
+          const option = document.createElement("option");
+          option.value = d;
+          option.innerText = `${d.substring(6, 8)}/${d.substring(4, 6)}/${d.substring(0, 4)}`;
+          selector.appendChild(option);
+        });
+      }
+
+      const filtered = filterDate ? files.filter(f => f.includes(filterDate)) : files.slice(0, 5);
+
+      container.innerHTML = "";
+      for (let file of filtered) {
+        try {
+          const res = await fetch("/static/logs/" + file);
+          const text = await res.text();
+          container.innerHTML += `<div class="log-block"><div class="log-title">🗂 ${file}</div><pre>${text}</pre></div>`;
+        } catch (e) {
+          console.error("Erreur chargement:", e);
+        }
+      }
+
+      if (!filtered.length) {
+        container.innerHTML = "<p>Aucun journal trouvé pour cette date.</p>";
+      }
+    }
+
+    loadLogs();
+  </script>
+</body>
+</html>

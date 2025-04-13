@@ -1,0 +1,9 @@
+[2025-04-11 20:51:29] Cohérence : False | Texte : Peut-être veux-tu dire : ‘Malgré que je suis heureux, il est aussi possible que je suis triste.
+ - Contradiction : 'je suis heureux' / 'je suis triste'
+[2025-04-11 21:25:35] Cohérence : True | Texte : Je suis triste et pourtant, je suis heureux à la fois.
+[2025-04-11 21:25:38] Cohérence : True | Texte : Je suis triste et pourtant, je suis heureux à la fois.
+[2025-04-11 21:37:22] Cohérence : True | Texte : bonjour comment vas -tu
+[2025-04-11 21:44:40] Cohérence : True | Texte : salut mon ami
+[2025-04-11 21:55:40] Cohérence : True | Texte : salut
+[2025-04-11 22:31:00] Cohérence : True | Texte : Je suis heureux, mais aussi totalement malheureux en même temps.
+[2025-04-11 22:42:27] Cohérence : True | Texte : Je suis certain de mon choix, mais je doute entièrement de ce que j’ai décidé.

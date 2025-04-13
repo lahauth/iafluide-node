@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>🧠 Journal des Mises à Jour – IA Fluide</title>
+    <style>
+        body { font-family: sans-serif; background: #f9f9f9; padding: 2em; color: #333; }
+        h1 { color: #0077aa; }
+        pre { background: #eee; padding: 1em; border-radius: 6px; max-height: 300px; overflow: auto; margin-bottom: 2em; }
+        .log-title { font-weight: bold; margin-top: 1em; color: #005577; }
+    </style>
+</head>
+<body>
+    <h1>📘 Journal des Mises à Jour IA Fluide</h1>
+    <p>Affichage automatique des 5 derniers journaux d'exécution :</p>
+    <div id="logs">Chargement...</div>
+
+    <script>
+        async function loadLogs() {
+            const logDir = '/static/logs/';
+            const logFilenames = [
+                'update_1.log', 'update_2.log', 'update_3.log',
+                'update_4.log', 'update_5.log'
+            ]; // Remplacer dynamiquement si backend disponible
+
+            let container = document.getElementById("logs");
+            container.innerHTML = "";
+
+            for (let name of logFilenames.reverse()) {
+                try {
+                    const res = await fetch(logDir + name);
+                    if (!res.ok) continue;
+                    const text = await res.text();
+                    container.innerHTML += `<div class="log-title">🗂 ${name}</div><pre>${text}</pre>`;
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+        }
+
+        loadLogs();
+    </script>
+</body>
+</html>
